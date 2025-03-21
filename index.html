@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Is Madlord Supermod Yet?</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.3"></script>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to bottom right, black, grey);
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .container {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 1s ease-in-out;
+    }
+    .date-box,
+    .last-checked {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+      font-size: 0.9rem;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .big-text {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .check-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .check-button:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Is Madlord Supermod Yet?</h1>
+    <hr style="width: 80%; border: 1px solid white; margin: 10px auto;" />
+    <div id="result" class="big-text">Checking...</div>
+    <div id="date-box" class="date-box" style="display: none;"></div>
+    <div id="last-checked" class="last-checked"></div>
+  </div>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <button id="check-button" class="check-button" onclick="checkSupermodStatus()">Check</button>
+  </div>
+
+  <script>
+    async function checkSupermodStatus() {
+      const button = document.getElementById("check-button");
+      button.textContent = "Checking...";
+      button.disabled = true;
+
+      const userId = "29w20l59y1m2zkzhkojnu";
+
+      try {
+        const userResponse = await fetch(`https://api.slin.dev/grab/v1/get_user_info?user_id=${userId}`);
+        if (!userResponse.ok) throw new Error("User API response was not ok");
+        const userData = await userResponse.json();
+
+        const resultElement = document.getElementById("result");
+        const dateBox = document.getElementById("date-box");
+
+        if (userData.is_supermoderator === true) {
+          resultElement.innerHTML = "YES!!!!!!! 🎉🥳";
+          launchConfetti();
+
+          let supermodDate = localStorage.getItem("supermodDate");
+          if (!supermodDate) {
+            supermodDate = 1741547430; // Replace with actual timestamp if known
+            localStorage.setItem("supermodDate", supermodDate);
+          }
+
+          const formattedDate = new Date(supermodDate * 1000).toLocaleString();
+          dateBox.textContent = "Supermod since: " + formattedDate;
+          dateBox.style.display = "block";
+        } else {
+          resultElement.innerHTML = "<span style='font-size: 2rem;'>Nope, not yet 😢</span>";
+          localStorage.removeItem("supermodDate");
+          dateBox.style.display = "none";
+        }
+
+        updateLastChecked();
+      } catch (error) {
+        document.getElementById("result").textContent = "Error fetching data";
+        console.error("Error fetching data:", error);
+      } finally {
+        button.textContent = "Check";
+        button.disabled = false;
+      }
+    }
+
+    function launchConfetti() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+    }
+
+    function updateLastChecked() {
+      const lastChecked = new Date().toLocaleString();
+      localStorage.setItem("lastChecked", lastChecked);
+      document.getElementById("last-checked").textContent = "Last checked: " + lastChecked;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedLastChecked = localStorage.getItem("lastChecked");
+      if (savedLastChecked) {
+        document.getElementById("last-checked").textContent = "Last checked: " + savedLastChecked;
+      }
+      checkSupermodStatus();
+      setInterval(checkSupermodStatus, 300000); // Every 5 minutes
+    });
+  </script>
+</body>
+</html>
