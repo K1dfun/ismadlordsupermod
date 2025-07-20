@@ -93,7 +93,7 @@
         const resultElement = document.getElementById("result");
         const dateBox = document.getElementById("date-box");
 
-        if (userData.is_supermoderator === false) { // just for now
+        if (userData.is_supermoderator === true || userData.is_supermoderator === false) { // just for now
           resultElement.innerHTML = "YES!!!!!!! 🎉🥳";
           launchConfetti();
 
