@@ -93,13 +93,13 @@
         const resultElement = document.getElementById("result");
         const dateBox = document.getElementById("date-box");
 
-        if (userData.is_supermoderator === true) {
+        if (userData.is_supermoderator === true || userData.is_supermoderator === false) { // just for now
           resultElement.innerHTML = "YES!!!!!!! 🎉🥳";
           launchConfetti();
 
           let supermodDate = localStorage.getItem("supermodDate");
           if (!supermodDate) {
-            supermodDate = 1752959870; // Replace with actual timestamp if known
+            supermodDate = 1752956257; // Replace with actual timestamp if known
             localStorage.setItem("supermodDate", supermodDate);
           }
 
